@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stancil Fence Co. Estimate Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --accent: #a5d6a7;
+      --light: #f9f9f9;
+      --gray: #ccc;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--light);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      background: #fff;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray);
+      border-radius: 4px;
+      font-size: 15px;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+
+    .output {
+      background-color: var(--accent);
+      color: #1b5e20;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 20px 0;
+    }
+
+    .disclaimer {
+      font-size: 13px;
+      color: #555;
+      margin-top: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Stancil Fence Co. Estimate Calculator</h2>
+
+    <label for="linearFeet">Linear Feet of Fence:</label>
+    <input type="number" id="linearFeet" placeholder="e.g., 100">
+
+    <label for="postSpacing">Post Spacing (ft):</label>
+    <input type="number" id="postSpacing" value="6">
+
+    <label for="includeStain">Include Staining?</label>
+    <select id="includeStain">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeRemoval">Remove Old Fence?</label>
+    <select id="includeRemoval">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeHaul">Haul Away Old Fence?</label>
+    <select id="includeHaul">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <button onclick="calculateEstimate()">Calculate Estimate</button>
+
+    <div class="output" id="results"></div>
+
+    <p class="disclaimer">
+      Note: This tool provides a rough estimate only. Stancil Fence Co. offers free in-person estimates that reflect exact material, labor, and site conditions. Final pricing may vary slightly based on terrain, access, and custom requests.
+    </p>
+  </div>
+
+  <script>
+    function calculateEstimate() {
+      const linearFeet = parseFloat(document.getElementById("linearFeet").value);
+      const spacing = parseFloat(document.getElementById("postSpacing").value);
+      const stain = document.getElementById("includeStain").value === "yes";
+      const removal = document.getElementById("includeRemoval").value === "yes";
+      const haul = document.getElementById("includeHaul").value === "yes";
+
+      const sections = Math.ceil(linearFeet / spacing);
+      const posts = sections + 1;
+      const rails = sections * 3;
+      const pickets = Math.ceil(linearFeet * 2.1);
+      const concreteBags = posts;
+      const screws = (pickets * 3 * 2) + (rails * 2);
+      const gravelBags = Math.ceil((posts * 10) / 50);
+
+      // Unit costs
+      const postCost = 15;
+      const railCost = 6;
+      const picketCost = 3;
+      const concreteCost = 6;
+      const gravelCost = 5;
+      const screwCost = 0.05;
+
+      const laborPerFoot = 15;
+      const stainPerFoot = 4;
+      const removalPerFoot = 5;
+      const haulOffFee = haul ? 100 : 0;
+
+      const materialCost = 
+        (posts * postCost) +
+        (rails * railCost) +
+        (pickets * picketCost) +
+        (concreteBags * concreteCost) +
+        (gravelBags * gravelCost) +
+        (screws * screwCost);
+
+      const laborCost = linearFeet * laborPerFoot;
+      const stainCost = stain ? linearFeet * stainPerFoot : 0;
+      const removalCost = removal ? linearFeet * removalPerFoot : 0;
+
+      const totalEstimate = materialCost + laborCost + stainCost + removalCost + haulOffFee;
+
+      document.getElementById("results").innerHTML = `
+        <strong>Estimate Breakdown:</strong><br><br>
+        Materials: $${materialCost.toFixed(2)}<br>
+        Labor: $${laborCost.toFixed(2)}<br>
+        ${stain ? `Staining: $${stainCost.toFixed(2)}<br>` : ``}
+        ${removal ? `Fence Removal: $${removalCost.toFixed(2)}<br>` : ``}
+        ${haul ? `Haul-Off Fee: $${haulOffFee.toFixed(2)}<br>` : ``}
+        <hr>
+        <strong>Total Estimated Cost: $${totalEstimate.toFixed(2)}</strong>
+      `;
+    }
+  </script>
+
+</body>
+</html>
