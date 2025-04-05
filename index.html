@@ -72,17 +72,15 @@
       margin-top: 20px;
     }
 
-    hr {
-      border: none;
-      border-top: 1px solid #ddd;
-      margin: 20px 0;
-    }
-
     .disclaimer {
       font-size: 13px;
       color: #555;
       margin-top: 10px;
       font-style: italic;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
@@ -91,29 +89,54 @@
   <div class="container">
     <h2>Stancil Fence Co. Estimate Calculator</h2>
 
-    <label for="linearFeet">Linear Feet of Fence:</label>
-    <input type="number" id="linearFeet" placeholder="e.g., 100">
-
-    <label for="postSpacing">Post Spacing (ft):</label>
-    <input type="number" id="postSpacing" value="6">
-
-    <label for="includeStain">Include Staining?</label>
-    <select id="includeStain">
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
+    <label for="fenceType">What type of fence?</label>
+    <select id="fenceType" onchange="showOptions()">
+      <option value="">-- Select Fence Type --</option>
+      <option value="wood">Wood</option>
+      <option value="chainlink">Chain Link</option>
     </select>
 
-    <label for="includeRemoval">Remove Old Fence?</label>
-    <select id="includeRemoval">
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
-    </select>
+    <div id="commonInputs" class="hidden">
+      <label for="linearFeet">Linear Feet of Fence:</label>
+      <input type="number" id="linearFeet" placeholder="e.g., 100">
 
-    <label for="includeHaul">Haul Away Old Fence?</label>
-    <select id="includeHaul">
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
-    </select>
+      <label for="postSpacing">Post Spacing (ft):</label>
+      <input type="number" id="postSpacing" value="6">
+    </div>
+
+    <div id="woodOptions" class="hidden">
+      <label for="includeStain">Include Staining?</label>
+      <select id="includeStain">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+
+      <label for="includeRemovalWood">Remove Old Fence?</label>
+      <select id="includeRemovalWood">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+
+      <label for="includeHaulWood">Haul Away Old Fence?</label>
+      <select id="includeHaulWood">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </div>
+
+    <div id="chainOptions" class="hidden">
+      <label for="includeRemovalChain">Remove Old Fence?</label>
+      <select id="includeRemovalChain">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+
+      <label for="includeHaulChain">Haul Away Old Fence?</label>
+      <select id="includeHaulChain">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </div>
 
     <button onclick="calculateEstimate()">Calculate Estimate</button>
 
@@ -125,57 +148,96 @@
   </div>
 
   <script>
+    function showOptions() {
+      const type = document.getElementById("fenceType").value;
+      document.getElementById("commonInputs").classList.remove("hidden");
+      document.getElementById("woodOptions").classList.add("hidden");
+      document.getElementById("chainOptions").classList.add("hidden");
+
+      if (type === "wood") {
+        document.getElementById("woodOptions").classList.remove("hidden");
+      } else if (type === "chainlink") {
+        document.getElementById("chainOptions").classList.remove("hidden");
+      }
+    }
+
     function calculateEstimate() {
+      const fenceType = document.getElementById("fenceType").value;
       const linearFeet = parseFloat(document.getElementById("linearFeet").value);
       const spacing = parseFloat(document.getElementById("postSpacing").value);
-      const stain = document.getElementById("includeStain").value === "yes";
-      const removal = document.getElementById("includeRemoval").value === "yes";
-      const haul = document.getElementById("includeHaul").value === "yes";
+
+      if (!linearFeet || !spacing) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      let materialCost = 0;
+      let laborCost = 0;
+      let stainCost = 0;
+      let removalCost = 0;
+      let haulOffFee = 0;
 
       const sections = Math.ceil(linearFeet / spacing);
       const posts = sections + 1;
-      const rails = sections * 3;
-      const pickets = Math.ceil(linearFeet * 2.1);
-      const concreteBags = posts;
-      const screws = (pickets * 3 * 2) + (rails * 2);
-      const gravelBags = Math.ceil((posts * 10) / 50);
 
-      // Unit costs
-      const postCost = 15;
-      const railCost = 6;
-      const picketCost = 3;
-      const concreteCost = 6;
-      const gravelCost = 5;
-      const screwCost = 0.05;
+      if (fenceType === "wood") {
+        const rails = sections * 3;
+        const pickets = Math.ceil(linearFeet * 2.1);
+        const concreteBags = posts;
+        const screws = (pickets * 3 * 2) + (rails * 2);
+        const gravelBags = Math.ceil((posts * 10) / 50);
 
-      const laborPerFoot = 15;
-      const stainPerFoot = 4;
-      const removalPerFoot = 5;
-      const haulOffFee = haul ? 100 : 0;
+        materialCost =
+          (posts * 15) +
+          (rails * 6) +
+          (pickets * 3) +
+          (concreteBags * 6) +
+          (gravelBags * 5) +
+          (screws * 0.05);
 
-      const materialCost = 
-        (posts * postCost) +
-        (rails * railCost) +
-        (pickets * picketCost) +
-        (concreteBags * concreteCost) +
-        (gravelBags * gravelCost) +
-        (screws * screwCost);
+        laborCost = linearFeet * 15;
 
-      const laborCost = linearFeet * laborPerFoot;
-      const stainCost = stain ? linearFeet * stainPerFoot : 0;
-      const removalCost = removal ? linearFeet * removalPerFoot : 0;
+        if (document.getElementById("includeStain").value === "yes") {
+          stainCost = linearFeet * 4;
+        }
 
-      const totalEstimate = materialCost + laborCost + stainCost + removalCost + haulOffFee;
+        if (document.getElementById("includeRemovalWood").value === "yes") {
+          removalCost = linearFeet * 5;
+        }
+
+        if (document.getElementById("includeHaulWood").value === "yes") {
+          haulOffFee = 100;
+        }
+
+      } else if (fenceType === "chainlink") {
+        materialCost =
+          (posts * 18) +
+          (linearFeet * 8) +
+          (linearFeet * 3) +
+          (posts * 6);
+
+        laborCost = linearFeet * 12;
+
+        if (document.getElementById("includeRemovalChain").value === "yes") {
+          removalCost = linearFeet * 5;
+        }
+
+        if (document.getElementById("includeHaulChain").value === "yes") {
+          haulOffFee = 100;
+        }
+      }
+
+      const total = materialCost + laborCost + stainCost + removalCost + haulOffFee;
 
       document.getElementById("results").innerHTML = `
-        <strong>Estimate Breakdown:</strong><br><br>
+        <strong>Fence Type:</strong> ${fenceType === "wood" ? "Wood" : "Chain Link"}<br>
         Materials: $${materialCost.toFixed(2)}<br>
         Labor: $${laborCost.toFixed(2)}<br>
-        ${stain ? `Staining: $${stainCost.toFixed(2)}<br>` : ``}
-        ${removal ? `Fence Removal: $${removalCost.toFixed(2)}<br>` : ``}
-        ${haul ? `Haul-Off Fee: $${haulOffFee.toFixed(2)}<br>` : ``}
+        ${stainCost ? `Staining: $${stainCost.toFixed(2)}<br>` : ""}
+        ${removalCost ? `Removal: $${removalCost.toFixed(2)}<br>` : ""}
+        ${haulOffFee ? `Haul-Off: $${haulOffFee.toFixed(2)}<br>` : ""}
         <hr>
-        <strong>Total Estimated Cost: $${totalEstimate.toFixed(2)}</strong>
+        <strong>Total Estimated Cost: $${total.toFixed(2)}</strong>
       `;
     }
   </script>
