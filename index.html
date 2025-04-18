@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Stancil Fence Co. New Fence Install Estimation</title>
+  <title>Stancil Fence Co. Internal Estimator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root { --primary: #2e7d32; --accent: #a5d6a7; --light: #f9f9f9; --gray: #ccc; }
@@ -20,7 +20,12 @@
 </head>
 <body>
   <div class="container">
-    <h2>Stancil Fence Co. New Fence Install Estimation</h2>
+    <h2>Stancil Fence Co. Estimate Calculator</h2>
+
+    <label for="jobType">Job Type:</label>
+    <select id="jobType">
+      <option value="newFence">New Fence Install</option>
+    </select>
 
     <label for="fenceType">Fence Type:</label>
     <select id="fenceType">
@@ -126,7 +131,7 @@
       const grossProfit = totalRevenue - totalCost - referralBonus;
       const afterTax = grossProfit * 0.7;
 
-      const resultsHTML = 
+      const resultsHTML = `
         <div style="margin-bottom: 25px;">
           <h4 style="margin-bottom: 10px;">Materials Breakdown:</h4>
           <ul>
@@ -136,9 +141,9 @@
             <li>Concrete Bags: ${concreteBags} ($${(concreteBags * 6).toFixed(2)})</li>
             <li>Gravel Bags: ${gravelBags} ($${(gravelBags * 5).toFixed(2)})</li>
             <li>Screws: ${screws} ($${(screws * 0.05).toFixed(2)})</li>
-            ${includeStain ? <li>Stain Material: ${(linearFeet * fenceHeight / stainCoverage).toFixed(1)} gal ($${(((linearFeet * fenceHeight) / stainCoverage) * stainPricePerGallon).toFixed(2)})</li> : ''}
-            ${useUhaulDel ? <li>U‑Haul Delivery Rental: $100</li> : ''}
-            ${includeHaul ? <li>U‑Haul Removal Rental: $100</li> : ''}
+            ${includeStain ? `<li>Stain Material: ${(linearFeet * fenceHeight / stainCoverage).toFixed(1)} gal ($${(((linearFeet * fenceHeight) / stainCoverage) * stainPricePerGallon).toFixed(2)})</li>` : ''}
+            ${useUhaulDel ? `<li>U‑Haul Delivery Rental: $100</li>` : ''}
+            ${includeHaul ? `<li>U‑Haul Removal Rental: $100</li>` : ''}
             <li>Truck Fuel Cost: $${gasAdjustment.toFixed(2)}</li>
           </ul>
           <strong>Total Materials Cost:</strong> $${materialCost.toFixed(2)}
@@ -147,9 +152,9 @@
           <h4 style="margin-bottom: 10px;">Charges Breakdown:</h4>
           <ul>
             <li>Labor @ $${laborRate.toFixed(2)}/ft: $${laborCost.toFixed(2)}</li>
-            ${includeStain ? <li>Stain Service: $${stainCharge.toFixed(2)}</li> : ''}
-            ${includeRemoval ? <li>Removal Charge: $${removalCharge.toFixed(2)}</li> : ''}
-            ${includeHaul ? <li>Haul-Off Charge: $${haulCharge.toFixed(2)}</li> : ''}
+            ${includeStain ? `<li>Stain Service: $${stainCharge.toFixed(2)}</li>` : ''}
+            ${includeRemoval ? `<li>Removal Charge: $${removalCharge.toFixed(2)}</li>` : ''}
+            ${includeHaul ? `<li>Haul-Off Charge: $${haulCharge.toFixed(2)}</li>` : ''}
           </ul>
           <strong>Total Charges:</strong> $${(laborCost + stainCharge + removalCharge + haulCharge).toFixed(2)}
         </div>
@@ -168,12 +173,10 @@
           <strong>Estimated take-home after 30% tax:</strong> $${afterTax.toFixed(2)}<br>
           <strong>Recommended Deposit (materials + 15% buffer):</strong> $${(totalCost * 1.15).toFixed(2)}
         </div>
-      ;
+      `;
 
       document.getElementById("results").innerHTML = resultsHTML;
     }
   </script>
 </body>
 </html>
-
-
