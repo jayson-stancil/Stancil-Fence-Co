@@ -2,6 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>Stancil Fence Co. Estimator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root { --primary: #2e7d32; --accent: #a5d6a7; --light: #f9f9f9; --gray: #ccc; }
+    body { font-family: 'Segoe UI', sans-serif; background-color: var(--light); margin: 0; padding: 0; }
+    .container { max-width: 700px; background: #fff; margin: 40px auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h2, h3 { color: var(--primary); text-align: center; margin-bottom: 20px; }
+    label { font-weight: 600; display: block; margin-top: 12px; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 6px; margin-bottom: 16px; border: 1px solid var(--gray); border-radius: 4px; font-size: 15px; }
+    button { background-color: var(--primary); color: white; font-weight: bold; cursor: pointer; border: none; transition: background-color 0.2s ease; }
+    button:hover { background-color: #1b5e20; }
+    .output { background-color: var(--accent); color: #1b5e20; padding: 15px; border-radius: 5px; font-size: 16px; margin-top: 20px; }
+    .hidden { display: none; }
+    ul { margin: 5px 0 15px 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Stancil Fence Co. Estimator</h2>
+
+    <label for="jobType">Select Job Type:</label>
+    <select id="jobType" onchange="toggleForms()">
+      <option value="">-- Choose --</option>
+      <option value="newInstall">New Fence Install</option>
+      <option value="repair">Repair</option>
+    </select>
+
+    <div id="newInstallForm" class="hidden">
+      <h3>New Fence Install</h3>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
   <title>Stancil Fence Co. New Fence Install Estimation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
@@ -175,3 +208,263 @@
   </script>
 </body>
 </html>
+    </div>
+
+    <div id="repairForm" class="hidden">
+      <h3>Repair</h3>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stancil Fence Co. Repair Estimate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root { --primary: #2e7d32; --accent: #a5d6a7; --light: #f9f9f9; --gray: #ccc; }
+    body { font-family: 'Segoe UI', sans-serif; background-color: var(--light); margin: 0; padding: 0; }
+    .container { max-width: 700px; background: #fff; margin: 40px auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h2 { color: var(--primary); text-align: center; margin-bottom: 20px; }
+    label { font-weight: 600; display: block; margin-top: 12px; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 6px; margin-bottom: 16px; border: 1px solid var(--gray); border-radius: 4px; font-size: 15px; }
+    button { background-color: var(--primary); color: white; font-weight: bold; cursor: pointer; border: none; transition: background-color 0.2s ease; }
+    button:hover { background-color: #1b5e20; }
+    .output { background-color: var(--accent); color: #1b5e20; padding: 15px; border-radius: 5px; font-size: 16px; margin-top: 20px; }
+    .hidden { display: none; }
+    ul { margin: 5px 0 15px 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Stancil Fence Co. Repair Estimate</h2>
+
+    <label for="fenceType">Fence Type:</label>
+    <select id="fenceType">
+      <option value="">-- Select Fence Type --</option>
+      <option value="wood">Wood</option>
+      <option value="chainlink">Chain Link</option>
+    </select>
+
+    <label for="linearFeet">Linear Feet:</label>
+    <input type="number" id="linearFeet" placeholder="e.g., 100">
+
+    <label for="postSpacing">Post Spacing (ft):</label>
+    <input type="number" id="postSpacing" value="6">
+
+    <label for="milesAway">Miles from Home Base:</label>
+    <input type="number" id="milesAway" placeholder="e.g., 15">
+
+    <label for="repairSize">Repair Size:</label>
+    <select id="repairSize">
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="large">Large</option>
+    </select>
+
+    <label for="useUhaulDel">Use U‑Haul for Delivery?</label>
+    <select id="useUhaulDel">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeReferralWood">Referral?</label>
+    <select id="includeReferralWood">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeStain">Include Staining?</label>
+    <select id="includeStain">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeRemovalWood">Remove Old Fence?</label>
+    <select id="includeRemovalWood">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeHaulWood">Haul Away Old Fence?</label>
+    <select id="includeHaulWood">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includePosts">Include Posts?</label>
+    <select id="includePosts">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label for="includeRails">Include Rails?</label>
+    <select id="includeRails">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label for="includePickets">Include Pickets?</label>
+    <select id="includePickets">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label for="includeConcrete">Include Concrete?</label>
+    <select id="includeConcrete">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label for="includeGravel">Include Gravel?</label>
+    <select id="includeGravel">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <label for="includeScrews">Include Screws?</label>
+    <select id="includeScrews">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <button onclick="calculateEstimate()">Calculate Estimate</button>
+    <div class="output" id="results"></div>
+  </div>
+
+  <script>
+    function calculateEstimate() {
+      const linearFeet = parseFloat(document.getElementById("linearFeet").value);
+      const spacing = parseFloat(document.getElementById("postSpacing").value);
+      const milesAway = parseFloat(document.getElementById("milesAway").value);
+      const repairSize = document.getElementById("repairSize").value;
+      const useUhaulDel = document.getElementById("useUhaulDel").value === "yes";
+      const includeReferral = document.getElementById("includeReferralWood").value === "yes";
+      const includeStain = document.getElementById("includeStain").value === "yes";
+      const includeRemoval = document.getElementById("includeRemovalWood").value === "yes";
+      const includeHaul = document.getElementById("includeHaulWood").value === "yes";
+
+      const includePosts = document.getElementById("includePosts").value === "yes";
+      const includeRails = document.getElementById("includeRails").value === "yes";
+      const includePickets = document.getElementById("includePickets").value === "yes";
+      const includeConcrete = document.getElementById("includeConcrete").value === "yes";
+      const includeGravel = document.getElementById("includeGravel").value === "yes";
+      const includeScrews = document.getElementById("includeScrews").value === "yes";
+
+      let referralBonus = 0;
+      if (includeReferral) {
+        if (repairSize === "large") referralBonus = 150;
+        else if (repairSize === "medium") referralBonus = 75;
+        else if (repairSize === "small") referralBonus = 25;
+      }
+
+      const fuelEfficiency = 15;
+      const gasPrice = 3.50;
+      const gasAdjustment = (milesAway * 2 / fuelEfficiency) * gasPrice;
+      const uhaulDelivery = useUhaulDel ? 100 : 0;
+      const uhaulRemoval = includeHaul ? 100 : 0;
+
+      const sections = Math.ceil(linearFeet / spacing);
+      const posts = includePosts ? (sections + 1) : 0;
+      const rails = includeRails ? (sections * 3) : 0;
+      const pickets = includePickets ? Math.ceil(linearFeet * 2.1) : 0;
+      const concreteBags = includeConcrete ? posts : 0;
+      const gravelBags = includeGravel ? Math.ceil((posts * 10) / 50) : 0;
+      const screws = includeScrews ? ((pickets * 3 * 2) + (rails * 2)) : 0;
+
+      const stainServiceRate = 4;
+      const stainCoverage = 150;
+      const fenceHeight = 6;
+      const stainPricePerGallon = 25;
+
+      const materialCost =
+        (posts * 15) +
+        (rails * 6) +
+        (pickets * 3) +
+        (concreteBags * 6) +
+        (gravelBags * 5) +
+        (screws * 0.05) +
+        (includeStain ? (((linearFeet * fenceHeight) / stainCoverage) * stainPricePerGallon) : 0) +
+        uhaulDelivery +
+        uhaulRemoval +
+        gasAdjustment;
+
+      const laborRate = 13 + (referralBonus / linearFeet);
+      const laborCost = linearFeet * laborRate;
+      const stainCharge = includeStain ? (linearFeet * stainServiceRate) : 0;
+      const removalCharge = includeRemoval ? (linearFeet * 5) : 0;
+      const haulCharge = includeHaul ? 100 : 0;
+
+      const totalCost = materialCost;
+      const totalRevenue = laborCost + stainCharge + removalCharge + haulCharge + materialCost;
+      const grossProfit = totalRevenue - totalCost - referralBonus;
+      const afterTax = grossProfit * 0.7;
+
+      const resultsHTML = `
+        <div style="margin-bottom: 25px;">
+          <h4 style="margin-bottom: 10px;">Materials Breakdown:</h4>
+          <ul>
+            ${includePosts ? `<li>Posts: ${posts} ($${(posts * 15).toFixed(2)})</li>` : ''}
+            ${includeRails ? `<li>Rails: ${rails} ($${(rails * 6).toFixed(2)})</li>` : ''}
+            ${includePickets ? `<li>Pickets: ${pickets} ($${(pickets * 3).toFixed(2)})</li>` : ''}
+            ${includeConcrete ? `<li>Concrete Bags: ${concreteBags} ($${(concreteBags * 6).toFixed(2)})</li>` : ''}
+            ${includeGravel ? `<li>Gravel Bags: ${gravelBags} ($${(gravelBags * 5).toFixed(2)})</li>` : ''}
+            ${includeScrews ? `<li>Screws: ${screws} ($${(screws * 0.05).toFixed(2)})</li>` : ''}
+            ${includeStain ? `<li>Stain Material: ${(linearFeet * fenceHeight / stainCoverage).toFixed(1)} gal ($${(((linearFeet * fenceHeight) / stainCoverage) * stainPricePerGallon).toFixed(2)})</li>` : ''}
+            ${useUhaulDel ? `<li>U‑Haul Delivery Rental: $100</li>` : ''}
+            ${includeHaul ? `<li>U‑Haul Removal Rental: $100</li>` : ''}
+            <li>Truck Fuel Cost: $${gasAdjustment.toFixed(2)}</li>
+          </ul>
+          <strong>Total Materials Cost:</strong> $${materialCost.toFixed(2)}
+        </div>
+        <div style="margin-bottom: 25px;">
+          <h4 style="margin-bottom: 10px;">Charges Breakdown:</h4>
+          <ul>
+            <li>Labor @ $${laborRate.toFixed(2)}/ft: $${laborCost.toFixed(2)}</li>
+            ${includeStain ? `<li>Stain Service: $${stainCharge.toFixed(2)}</li>` : ''}
+            ${includeRemoval ? `<li>Removal Charge: $${removalCharge.toFixed(2)}</li>` : ''}
+            ${includeHaul ? `<li>Haul-Off Charge: $${haulCharge.toFixed(2)}</li>` : ''}
+          </ul>
+          <strong>Total Charges:</strong> $${(laborCost + stainCharge + removalCharge + haulCharge).toFixed(2)}
+        </div>
+        <div style="margin-bottom: 25px;">
+          <h4 style="margin-bottom: 10px;">Financial Summary:</h4>
+          <strong>Total Cost:</strong> $${totalCost.toFixed(2)}<br>
+          <strong>Total Revenue:</strong> $${totalRevenue.toFixed(2)}<br>
+          <strong>Gross Profit:</strong> $${grossProfit.toFixed(2)}<br>
+          <strong>Profit After 30% Tax:</strong> $${afterTax.toFixed(2)}
+        </div>
+        <div>
+          <h4 style="margin-bottom: 10px;">Summary:</h4>
+          <strong>You are charging the customer:</strong> $${totalRevenue.toFixed(2)}<br>
+          <strong>Your estimated material costs:</strong> $${totalCost.toFixed(2)}<br>
+          <strong>Your estimated profit before tax:</strong> $${grossProfit.toFixed(2)}<br>
+          <strong>Estimated take-home after 30% tax:</strong> $${afterTax.toFixed(2)}<br>
+          <strong>Recommended Deposit (materials + 15% buffer):</strong> $${(totalCost * 1.15).toFixed(2)}
+        </div>
+      `;
+
+      document.getElementById("results").innerHTML = resultsHTML;
+    }
+  </script>
+</body>
+</html>
+    </div>
+  </div>
+
+  <script>
+    function toggleForms() {
+      const jobType = document.getElementById("jobType").value;
+      const newInstallForm = document.getElementById("newInstallForm");
+      const repairForm = document.getElementById("repairForm");
+
+      newInstallForm.classList.add("hidden");
+      repairForm.classList.add("hidden");
+
+      if (jobType === "newInstall") {
+        newInstallForm.classList.remove("hidden");
+      } else if (jobType === "repair") {
+        repairForm.classList.remove("hidden");
+      }
+    }
+  </script>
+</body>
+</html>
+
