@@ -1,0 +1,268 @@
+from IPython.display import HTML
+
+# Simplified version that removes the API and allows manual mileage input
+html_manual_mileage = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stancil Fence Co. Internal Estimator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --accent: #a5d6a7;
+      --light: #f9f9f9;
+      --gray: #ccc;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--light);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      background: #fff;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 10px;
+      display: block;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      margin-bottom: 16px;
+      border: 1px solid var(--gray);
+      border-radius: 4px;
+      font-size: 15px;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+
+    .output {
+      background-color: var(--accent);
+      color: #1b5e20;
+      padding: 15px;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
+    .disclaimer {
+      font-size: 13px;
+      color: #555;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Stancil Fence Co. Estimate Calculator (Internal)</h2>
+
+  <label for="fenceType">Fence Type:</label>
+  <select id="fenceType" onchange="showOptions()">
+    <option value="">-- Select Fence Type --</option>
+    <option value="wood">Wood</option>
+    <option value="chainlink">Chain Link</option>
+  </select>
+
+  <div id="commonInputs" class="hidden">
+    <label for="linearFeet">Linear Feet:</label>
+    <input type="number" id="linearFeet" placeholder="e.g., 100">
+
+    <label for="postSpacing">Post Spacing (ft):</label>
+    <input type="number" id="postSpacing" value="6">
+
+    <label for="milesAway">Miles from Home Base:</label>
+    <input type="number" id="milesAway" placeholder="e.g., 15">
+
+    <label for="isReferred">Is this a referred job?</label>
+    <select id="isReferred">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+  </div>
+
+  <div id="woodOptions" class="hidden">
+    <label for="includeStain">Include Staining?</label>
+    <select id="includeStain">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeRemovalWood">Remove Old Fence?</label>
+    <select id="includeRemovalWood">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeHaulWood">Haul Away Old Fence?</label>
+    <select id="includeHaulWood">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+  </div>
+
+  <div id="chainOptions" class="hidden">
+    <label for="includeRemovalChain">Remove Old Fence?</label>
+    <select id="includeRemovalChain">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
+    <label for="includeHaulChain">Haul Away Old Fence?</label>
+    <select id="includeHaulChain">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+  </div>
+
+  <button onclick="calculateEstimate()">Calculate Estimate</button>
+
+  <div class="output" id="results"></div>
+
+  <p class="disclaimer">
+    Internal use only. Final estimate may differ based on terrain, access, custom work, or unforeseen obstacles.
+  </p>
+</div>
+
+<script>
+  function showOptions() {
+    const type = document.getElementById("fenceType").value;
+    document.getElementById("commonInputs").classList.remove("hidden");
+    document.getElementById("woodOptions").classList.add("hidden");
+    document.getElementById("chainOptions").classList.add("hidden");
+
+    if (type === "wood") {
+      document.getElementById("woodOptions").classList.remove("hidden");
+    } else if (type === "chainlink") {
+      document.getElementById("chainOptions").classList.remove("hidden");
+    }
+  }
+
+  function calculateEstimate() {
+    const fenceType = document.getElementById("fenceType").value;
+    const linearFeet = parseFloat(document.getElementById("linearFeet").value);
+    const spacing = parseFloat(document.getElementById("postSpacing").value);
+    const milesAway = parseFloat(document.getElementById("milesAway").value);
+    const isReferred = document.getElementById("isReferred").value === "yes";
+
+    const referralBonus = isReferred ? 200 : 0;
+    const fuelEfficiency = 15;
+    const gasPricePerGallon = 3.50;
+    const gasAdjustment = (milesAway * 2 / fuelEfficiency) * gasPricePerGallon; // round trip
+
+    const sections = Math.ceil(linearFeet / spacing);
+    const posts = sections + 1;
+    let materialCost = 0;
+    let laborCost = 0;
+    let stainCost = 0;
+    let removalCost = 0;
+    let haulOffFee = 0;
+
+    let baseLaborRate = fenceType === "wood" ? 12 : 10;
+    let laborRate = baseLaborRate + (referralBonus / linearFeet);
+
+    if (fenceType === "wood") {
+      const rails = sections * 3;
+      const pickets = Math.ceil(linearFeet * 2.1);
+      const concreteBags = posts;
+      const screws = (pickets * 3 * 2) + (rails * 2);
+      const gravelBags = Math.ceil((posts * 10) / 50);
+
+      materialCost =
+        (posts * 15) +
+        (rails * 6) +
+        (pickets * 3) +
+        (concreteBags * 6) +
+        (gravelBags * 5) +
+        (screws * 0.05);
+
+      laborCost = linearFeet * laborRate;
+
+      if (document.getElementById("includeStain").value === "yes") {
+        stainCost = linearFeet * 4;
+      }
+
+      if (document.getElementById("includeRemovalWood").value === "yes") {
+        removalCost = linearFeet * 5;
+      }
+
+      if (document.getElementById("includeHaulWood").value === "yes") {
+        haulOffFee = 100;
+      }
+
+    } else if (fenceType === "chainlink") {
+      materialCost =
+        (posts * 18) +
+        (linearFeet * 8) +
+        (linearFeet * 3) +
+        (posts * 6);
+
+      laborCost = linearFeet * laborRate;
+
+      if (document.getElementById("includeRemovalChain").value === "yes") {
+        removalCost = linearFeet * 5;
+      }
+
+      if (document.getElementById("includeHaulChain").value === "yes") {
+        haulOffFee = 100;
+      }
+    }
+
+    const total = materialCost + laborCost + stainCost + removalCost + haulOffFee + gasAdjustment;
+
+    document.getElementById("results").innerHTML = `
+      <strong>Fence Type:</strong> ${fenceType === "wood" ? "Wood" : "Chain Link"}<br>
+      Materials: $${materialCost.toFixed(2)}<br>
+      Labor (at $${laborRate.toFixed(2)}/ft): $${laborCost.toFixed(2)}<br>
+      ${isReferred ? `Referral Bonus Included: $${referralBonus.toFixed(2)}<br>` : ""}
+      Gas Adjustment: $${gasAdjustment.toFixed(2)}<br>
+      ${stainCost ? `Staining: $${stainCost.toFixed(2)}<br>` : ""}
+      ${removalCost ? `Removal: $${removalCost.toFixed(2)}<br>` : ""}
+      ${haulOffFee ? `Haul-Off: $${haulOffFee.toFixed(2)}<br>` : ""}
+      <hr>
+      <strong>Total Estimated Cost: $${total.toFixed(2)}</strong>
+    `;
+  }
+</script>
+
+</body>
+</html>
+"""
+
+HTML(html_manual_mileage)
