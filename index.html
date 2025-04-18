@@ -5,98 +5,35 @@
   <title>Stancil Fence Co. Internal Estimator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --primary: #2e7d32;
-      --accent: #a5d6a7;
-      --light: #f9f9f9;
-      --gray: #ccc;
-    }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--light);
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 600px;
-      background: #fff;
-      margin: 50px auto;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-      color: var(--primary);
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    label {
-      font-weight: 600;
-      margin-top: 10px;
-      display: block;
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      margin-bottom: 16px;
-      border: 1px solid var(--gray);
-      border-radius: 4px;
-      font-size: 15px;
-    }
-
-    button {
-      background-color: var(--primary);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      transition: background-color 0.2s ease;
-    }
-
-    button:hover {
-      background-color: #1b5e20;
-    }
-
-    .output {
-      background-color: var(--accent);
-      color: #1b5e20;
-      padding: 15px;
-      border-radius: 5px;
-      font-size: 16px;
-      margin-top: 20px;
-    }
-
-    .disclaimer {
-      font-size: 13px;
-      color: #555;
-      margin-top: 10px;
-      font-style: italic;
-    }
-
-    .hidden {
-      display: none;
-    }
+    :root { --primary: #2e7d32; --accent: #a5d6a7; --light: #f9f9f9; --gray: #ccc; }
+    body { font-family: 'Segoe UI', sans-serif; background-color: var(--light); margin: 0; padding: 0; }
+    .container { max-width: 700px; background: #fff; margin: 40px auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h2 { color: var(--primary); text-align: center; margin-bottom: 20px; }
+    label { font-weight: 600; display: block; margin-top: 12px; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 6px; margin-bottom: 16px; border: 1px solid var(--gray); border-radius: 4px; font-size: 15px; }
+    button { background-color: var(--primary); color: white; font-weight: bold; cursor: pointer; border: none; transition: background-color 0.2s ease; }
+    button:hover { background-color: #1b5e20; }
+    .output { background-color: var(--accent); color: #1b5e20; padding: 15px; border-radius: 5px; font-size: 16px; margin-top: 20px; }
+    .hidden { display: none; }
+    ul { margin: 5px 0 15px 20px; }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Stancil Fence Co. Estimate Calculator</h2>
 
-<div class="container">
-  <h2>Stancil Fence Co. Estimate Calculator (Internal)</h2>
+    <label for="jobType">Job Type:</label>
+    <select id="jobType">
+      <option value="newFence">New Fence Install</option>
+    </select>
 
-  <label for="fenceType">Fence Type:</label>
-  <select id="fenceType" onchange="showOptions()">
-    <option value="">-- Select Fence Type --</option>
-    <option value="wood">Wood</option>
-    <option value="chainlink">Chain Link</option>
-  </select>
+    <label for="fenceType">Fence Type:</label>
+    <select id="fenceType">
+      <option value="">-- Select Fence Type --</option>
+      <option value="wood">Wood</option>
+      <option value="chainlink">Chain Link</option>
+    </select>
 
-  <div id="commonInputs" class="hidden">
     <label for="linearFeet">Linear Feet:</label>
     <input type="number" id="linearFeet" placeholder="e.g., 100">
 
@@ -106,14 +43,18 @@
     <label for="milesAway">Miles from Home Base:</label>
     <input type="number" id="milesAway" placeholder="e.g., 15">
 
-    <label for="isReferred">Is this a referred job?</label>
-    <select id="isReferred">
+    <label for="useUhaulDel">Use U‑Haul for Delivery?</label>
+    <select id="useUhaulDel">
       <option value="no">No</option>
       <option value="yes">Yes</option>
     </select>
-  </div>
 
-  <div id="woodOptions" class="hidden">
+    <label for="includeReferralWood">Referral?</label>
+    <select id="includeReferralWood">
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+
     <label for="includeStain">Include Staining?</label>
     <select id="includeStain">
       <option value="no">No</option>
@@ -131,131 +72,111 @@
       <option value="no">No</option>
       <option value="yes">Yes</option>
     </select>
+
+    <button onclick="calculateEstimate()">Calculate Estimate</button>
+    <div class="output" id="results"></div>
   </div>
 
-  <div id="chainOptions" class="hidden">
-    <label for="includeRemovalChain">Remove Old Fence?</label>
-    <select id="includeRemovalChain">
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
-    </select>
+  <script>
+    function calculateEstimate() {
+      const linearFeet = parseFloat(document.getElementById("linearFeet").value);
+      const spacing = parseFloat(document.getElementById("postSpacing").value);
+      const milesAway = parseFloat(document.getElementById("milesAway").value);
+      const useUhaulDel = document.getElementById("useUhaulDel").value === "yes";
+      const includeReferral = document.getElementById("includeReferralWood").value === "yes";
+      const includeStain = document.getElementById("includeStain").value === "yes";
+      const includeRemoval = document.getElementById("includeRemovalWood").value === "yes";
+      const includeHaul = document.getElementById("includeHaulWood").value === "yes";
 
-    <label for="includeHaulChain">Haul Away Old Fence?</label>
-    <select id="includeHaulChain">
-      <option value="no">No</option>
-      <option value="yes">Yes</option>
-    </select>
-  </div>
+      const referralBonus = includeReferral ? 200 : 0;
+      const fuelEfficiency = 15;
+      const gasPrice = 3.50;
+      const gasAdjustment = (milesAway * 2 / fuelEfficiency) * gasPrice;
+      const uhaulDelivery = useUhaulDel ? 100 : 0;
+      const uhaulRemoval = includeHaul ? 100 : 0;
 
-  <button onclick="calculateEstimate()">Calculate Estimate</button>
-
-  <div class="output" id="results"></div>
-
-  <p class="disclaimer">
-    Internal use only. Final estimate may differ based on terrain, access, custom work, or unforeseen obstacles.
-  </p>
-</div>
-
-<script>
-  function showOptions() {
-    const type = document.getElementById("fenceType").value;
-    document.getElementById("commonInputs").classList.remove("hidden");
-    document.getElementById("woodOptions").classList.add("hidden");
-    document.getElementById("chainOptions").classList.add("hidden");
-
-    if (type === "wood") {
-      document.getElementById("woodOptions").classList.remove("hidden");
-    } else if (type === "chainlink") {
-      document.getElementById("chainOptions").classList.remove("hidden");
-    }
-  }
-
-  function calculateEstimate() {
-    const fenceType = document.getElementById("fenceType").value;
-    const linearFeet = parseFloat(document.getElementById("linearFeet").value);
-    const spacing = parseFloat(document.getElementById("postSpacing").value);
-    const milesAway = parseFloat(document.getElementById("milesAway").value);
-    const isReferred = document.getElementById("isReferred").value === "yes";
-
-    const referralBonus = isReferred ? 200 : 0;
-    const fuelEfficiency = 15;
-    const gasPricePerGallon = 3.50;
-    const gasAdjustment = (milesAway * 2 / fuelEfficiency) * gasPricePerGallon; // round trip
-
-    const sections = Math.ceil(linearFeet / spacing);
-    const posts = sections + 1;
-    let materialCost = 0;
-    let laborCost = 0;
-    let stainCost = 0;
-    let removalCost = 0;
-    let haulOffFee = 0;
-
-    let baseLaborRate = fenceType === "wood" ? 12 : 10;
-    let laborRate = baseLaborRate + (referralBonus / linearFeet);
-
-    if (fenceType === "wood") {
+      const sections = Math.ceil(linearFeet / spacing);
+      const posts = sections + 1;
       const rails = sections * 3;
       const pickets = Math.ceil(linearFeet * 2.1);
       const concreteBags = posts;
-      const screws = (pickets * 3 * 2) + (rails * 2);
       const gravelBags = Math.ceil((posts * 10) / 50);
+      const screws = (pickets * 3 * 2) + (rails * 2);
 
-      materialCost =
+      const stainServiceRate = 4;
+      const stainCoverage = 150;
+      const fenceHeight = 6;
+      const stainPricePerGallon = 25;
+
+      const materialCost =
         (posts * 15) +
         (rails * 6) +
         (pickets * 3) +
         (concreteBags * 6) +
         (gravelBags * 5) +
-        (screws * 0.05);
+        (screws * 0.05) +
+        (includeStain ? (((linearFeet * fenceHeight) / stainCoverage) * stainPricePerGallon) : 0) +
+        uhaulDelivery +
+        uhaulRemoval +
+        gasAdjustment;
 
-      laborCost = linearFeet * laborRate;
+      const laborRate = 13 + (referralBonus / linearFeet);
+      const laborCost = linearFeet * laborRate;
+      const stainCharge = includeStain ? (linearFeet * stainServiceRate) : 0;
+      const removalCharge = includeRemoval ? (linearFeet * 5) : 0;
+      const haulCharge = includeHaul ? 100 : 0;
 
-      if (document.getElementById("includeStain").value === "yes") {
-        stainCost = linearFeet * 4;
-      }
+      const totalCost = materialCost;
+      const totalRevenue = laborCost + stainCharge + removalCharge + haulCharge + materialCost;
+      const grossProfit = totalRevenue - totalCost - referralBonus;
+      const afterTax = grossProfit * 0.7;
 
-      if (document.getElementById("includeRemovalWood").value === "yes") {
-        removalCost = linearFeet * 5;
-      }
+      const resultsHTML = `
+        <div style="margin-bottom: 25px;">
+          <h4 style="margin-bottom: 10px;">Materials Breakdown:</h4>
+          <ul>
+            <li>Posts: ${posts} ($${(posts * 15).toFixed(2)})</li>
+            <li>Rails: ${rails} ($${(rails * 6).toFixed(2)})</li>
+            <li>Pickets: ${pickets} ($${(pickets * 3).toFixed(2)})</li>
+            <li>Concrete Bags: ${concreteBags} ($${(concreteBags * 6).toFixed(2)})</li>
+            <li>Gravel Bags: ${gravelBags} ($${(gravelBags * 5).toFixed(2)})</li>
+            <li>Screws: ${screws} ($${(screws * 0.05).toFixed(2)})</li>
+            ${includeStain ? `<li>Stain Material: ${(linearFeet * fenceHeight / stainCoverage).toFixed(1)} gal ($${(((linearFeet * fenceHeight) / stainCoverage) * stainPricePerGallon).toFixed(2)})</li>` : ''}
+            ${useUhaulDel ? `<li>U‑Haul Delivery Rental: $100</li>` : ''}
+            ${includeHaul ? `<li>U‑Haul Removal Rental: $100</li>` : ''}
+            <li>Truck Fuel Cost: $${gasAdjustment.toFixed(2)}</li>
+          </ul>
+          <strong>Total Materials Cost:</strong> $${materialCost.toFixed(2)}
+        </div>
+        <div style="margin-bottom: 25px;">
+          <h4 style="margin-bottom: 10px;">Charges Breakdown:</h4>
+          <ul>
+            <li>Labor @ $${laborRate.toFixed(2)}/ft: $${laborCost.toFixed(2)}</li>
+            ${includeStain ? `<li>Stain Service: $${stainCharge.toFixed(2)}</li>` : ''}
+            ${includeRemoval ? `<li>Removal Charge: $${removalCharge.toFixed(2)}</li>` : ''}
+            ${includeHaul ? `<li>Haul-Off Charge: $${haulCharge.toFixed(2)}</li>` : ''}
+          </ul>
+          <strong>Total Charges:</strong> $${(laborCost + stainCharge + removalCharge + haulCharge).toFixed(2)}
+        </div>
+        <div style="margin-bottom: 25px;">
+          <h4 style="margin-bottom: 10px;">Financial Summary:</h4>
+          <strong>Total Cost:</strong> $${totalCost.toFixed(2)}<br>
+          <strong>Total Revenue:</strong> $${totalRevenue.toFixed(2)}<br>
+          <strong>Gross Profit:</strong> $${grossProfit.toFixed(2)}<br>
+          <strong>Profit After 30% Tax:</strong> $${afterTax.toFixed(2)}
+        </div>
+        <div>
+          <h4 style="margin-bottom: 10px;">Summary:</h4>
+          <strong>You are charging the customer:</strong> $${totalRevenue.toFixed(2)}<br>
+          <strong>Your estimated material costs:</strong> $${totalCost.toFixed(2)}<br>
+          <strong>Your estimated profit before tax:</strong> $${grossProfit.toFixed(2)}<br>
+          <strong>Estimated take-home after 30% tax:</strong> $${afterTax.toFixed(2)}<br>
+          <strong>Recommended Deposit (materials + 15% buffer):</strong> $${(totalCost * 1.15).toFixed(2)}
+        </div>
+      `;
 
-      if (document.getElementById("includeHaulWood").value === "yes") {
-        haulOffFee = 100;
-      }
-
-    } else if (fenceType === "chainlink") {
-      materialCost =
-        (posts * 18) +
-        (linearFeet * 8) +
-        (linearFeet * 3) +
-        (posts * 6);
-
-      laborCost = linearFeet * laborRate;
-
-      if (document.getElementById("includeRemovalChain").value === "yes") {
-        removalCost = linearFeet * 5;
-      }
-
-      if (document.getElementById("includeHaulChain").value === "yes") {
-        haulOffFee = 100;
-      }
+      document.getElementById("results").innerHTML = resultsHTML;
     }
-
-    const total = materialCost + laborCost + stainCost + removalCost + haulOffFee + gasAdjustment;
-
-    document.getElementById("results").innerHTML = `
-      <strong>Fence Type:</strong> ${fenceType === "wood" ? "Wood" : "Chain Link"}<br>
-      Materials: $${materialCost.toFixed(2)}<br>
-      Labor (at $${laborRate.toFixed(2)}/ft): $${laborCost.toFixed(2)}<br>
-      ${isReferred ? `Referral Bonus Included: $${referralBonus.toFixed(2)}<br>` : ""}
-      Gas Adjustment: $${gasAdjustment.toFixed(2)}<br>
-      ${stainCost ? `Staining: $${stainCost.toFixed(2)}<br>` : ""}
-      ${removalCost ? `Removal: $${removalCost.toFixed(2)}<br>` : ""}
-      ${haulOffFee ? `Haul-Off: $${haulOffFee.toFixed(2)}<br>` : ""}
-      <hr>
-      <strong>Total Estimated Cost: $${total.toFixed(2)}</strong>
-    `;
-  }
-</script>
-
+  </script>
 </body>
 </html>
